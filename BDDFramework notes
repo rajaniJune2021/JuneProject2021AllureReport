@@ -1,0 +1,48 @@
+BDD framework notes:
+spoc - developer BDD framework name
+Cucumber framework - tester BDD approach
+
+BDD:
+In BDD also we write the test cases before the application code but the difference between TDD and BDD are
+1. In BDD test are written plain english language anyone can understand doesn't require technical knowledge.
+2. test cases are more user focused
+3. BDD works as interface between technical and business language and test cases written plain text underneath there is code exists.
+Cucumber is one of the BDD framework.
+We can define the tests using simple grammar by language called gherkin.
+Requirement specifications will be understood by the whole team members such as (development, tester, business and product owners) so right product will be developed during initial phase itself.
+
+Gherkin Key words:
+1. Feature - It defines the test functionality of that Gherkin file
+2.background - This keyword used to define steps are that common for all the test cases in the feature file.( This works like before Method as we initialize pages for all the test cases )
+3,scenario - Group of steps
+4.scenario outline - Group of test for set of test data.(to execute multiple time single test with multiple test data as we use inTest ng DataProvider)
+5. Given - Defines precondition of a test
+6.When - Defines input action of test
+7.Then - Defines the outcome of the previous step
+8.And - If add one additional condition this "AND" keyword will be added after the when/then condition
+9.But - Defines the negative steps - Negative scenario testing
+10.*, - replace all the keywords given when and then but as it takes new step.
+11. Examples - Specify the multiple set of data
+12. Data Table - To pass in only one set of test data, we use this data table approach instead of Examples key word.
+13. Examples key word0 will be used to pass in multiple set of test data.
+12. Scenario outlines has to mentioned if we use example keyword for multiple set of test data otherwise it's just scenario keyword have to mention.
+
+hooks: @befoe and @after -
+2before-db connnection open,
+Retry keyword can be used in test runner to execute test cases until it passed condition or different condition based.
+
+// In Test Runnner class we should always give Step definition file name instead of Step Definition class path (  otherwise Test runner will not pick the test cases)
+
+Before tag in cucumber called as hooks and if methods defined with @before tag in step definition file this peace of method will execute before every test case.
+Connection between step definition file and feature file is 'glue' added in the test runner file for ex: glue = {"stepDefinitions"}
+if Individual test case has to be executed we should give @tag naming for the particular case and add that into the test runner class
+
+Run the feature files via maven command : mvn test -Dcucumber.options="--tags tagname(ex:@quicktest)
+Run for specific feature file - via maven command - mvn test -Dcucumber.options="src/main/resources/testFeatureFiles/registration.feature:22"
+allure report maven command  : allure serve
+
+
+
+
+
+

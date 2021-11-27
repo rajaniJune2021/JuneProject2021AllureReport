@@ -1,0 +1,152 @@
+
+import io.restassured.RestAssured;
+import io.restassured.config.EncoderConfig;
+import io.restassured.http.ContentType;
+import io.restassured.response.Response;
+import io.restassured.response.ResponseBody;
+import io.restassured.specification.RequestSpecification;
+import org.apache.log4j.Logger;
+
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+
+import java.io.FileReader;
+import java.util.HashMap;
+
+
+public class PaymentsErrorPage extends TestBase {
+
+    public static Logger LOGGER = TestUtils.setDebugger(PaymentsErrorPage.class);
+
+    @FindBy(xpath = "//a[@href='tel:1-877-374-5116']")
+    private WebElement acmoTollFreeNo;
+
+    @FindBy(xpath = "//a[@href='tel:1-800-521-8124']")
+    private WebElement alTollFreeNo;
+
+    @FindBy(xpath = "//a[@href='tel:1-877-428-2277']")
+    private WebElement caTollFreeNo;
+
+    @FindBy(xpath = "//a[@href='tel:1-800-441-5008']")
+    private WebElement ecTollFreeNo;
+
+    @FindBy(xpath = "//a[@href='tel:1-800-736-2886']")
+    private WebElement hiTollFreeNo;
+
+    @FindBy(xpath = "//a[@href='tel:1-877-222-1020']")
+    private WebElement nmTollFreeNo;
+
+    @FindBy(xpath = "//a[@href='tel:1-800-222-3612']")
+    private WebElement nneTollFreeNumber;
+
+    @FindBy(xpath = "//a[@href='tel:1-800-765-0766']")
+    private WebElement txTollFreeNumber;
+
+    @FindBy(xpath = "//a[@href='tel:1-800-765-0766']")
+    private WebElement twTollFreeNumber;
+
+    @FindBy(xpath = "//a[contains(text(),'See nearest branches')]")
+    private WebElement seeAllBranches;
+
+    public PaymentsErrorPage() {
+        super();
+    }
+
+
+
+    public void getManifestIdToken(String customerID, String clubCode, double amount) {
+//    public static void main(String[] args) {
+        try {
+            RestAssured.baseURI = "https://apiuat1.ace.aaa.com/payment";
+            RequestSpecification rsp = RestAssured.given();
+            rsp.header("Content-Type", "application/json");
+            rsp.header("x-api-key", "nksbSlayuPyt6aXnE4FgusHmYnc23s");
+            FileReader fr = new FileReader("C:/Users/e678332/Desktop/manifestrequestbody.json");
+            JSONParser jsonParser = new JSONParser();
+            JSONObject jsonObject = (JSONObject) jsonParser.parse(fr);
+            jsonObject.put("customerId", customerID);
+            jsonObject.put("clubCode", clubCode);
+            jsonObject.put("amount", amount);
+         //   JSONArray jsonArray = jsonObject.getJSONArray("products");
+         //   JSONObject jsonObject1 = (JSONObject) jsonArray.get(0);
+//            jsonObject1.put("amount",amount);
+//            jsonObject1.put("productId","00005801");
+            rsp.body(jsonObject);
+            Response response = rsp.post("/v1/manifests");
+            String responseID = response.jsonPath().get("id");
+            System.out.println(responseID);
+            ResponseBody responseBody = response.getBody();
+            String apiResponse = responseBody.asString();
+            System.out.println();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static String getAuthTtoken(){
+        String authTokenID ="";
+        try {
+            RestAssured.useRelaxedHTTPSValidation();
+            RestAssured.baseURI = "https://login.microsoftonline.com/d5f618ff-2951-4904-8f7e-999c2dd97ab2";
+            RequestSpecification rsp1 = RestAssured.given();
+            rsp1.header("Accept", "*/*");
+            JSONObject jsonObject = new JSONObject();
+            Response response = RestAssured.given().config(RestAssured.config().encoderConfig(EncoderConfig.encoderConfig().encodeContentTypeAs("x-www-form-urlencoded", ContentType.URLENC))).
+                    formParam("client_assertion_type","urn:ietf:params:oauth:client-assertion-type:jwt-bearer").
+                    formParam("grant_type","client_credentials").
+                    formParam("scope","api://aceclubnet.onmicrosoft.com/mulesoft/membership/.default").
+                    formParam("client_assertion","eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsIng1dCI6ImluY3VQK0h5dTFDRXJKaFRXT212czdLRlk4VT0ifQ.eyJhdWQiOiJodHRwczovL2xvZ2luLm1pY3Jvc29mdG9ubGluZS5jb20vZDVmNjE4ZmYtMjk1MS00OTA0LThmN2UtOTk5YzJkZDk3YWIyL29hdXRoMi92Mi4wL3Rva2VuIiwiZXhwIjoxNjk5NTY1NDM5LCJpc3MiOiI5MTEzZTY1YS0yNDkwLTQxNTgtYmE5Ny1iOGU2OTVhZjdhMDEiLCJqdGkiOiIwYzg2MzBhMS1lZDJhLTQ4MjAtYjAwOC0yNzg4ZmViODM5M2MiLCJuYmYiOjE2MTI0NjI5OTUsInN1YiI6IjkxMTNlNjVhLTI0OTAtNDE1OC1iYTk3LWI4ZTY5NWFmN2EwMSJ9.Re759QxduJoqFN1SWRM_wInW5qPKrIFhAk4St36C5xuGip5MmtgFR9dBq8KO-QnZ9NkXs2XciGddNDk7RNL6Svdorrp5vo62DQ70slIZqeLBT9dCjPW8vmQRW5W4MvHsKP-zDhRqiFpsUfoDFfsfcfPPCuNp2UOYi8q-FXL5JbyPvcDVUsssQJX4nxkjGaZID19ylPfpErhXpBWfy18PXb1rtvG3sfhbCmLQeZS2EEA0ha-d2dvlZQFaRv5VgLjY2ZbxB-NeGPitbXMUFGLU_72QD8UCtZhskDkm34ogMliZDmr7EVNFD-SG7T1ItiKCeuyw3Nmjj_HaNv6i2cVNNQ").
+                    formParam("client_id","9113e65a-2490-4158-ba97-b8e695af7a01").
+                    formParam("tenant","d5f618ff-2951-4904-8f7e-999c2dd97ab2").post("/oauth2/v2.0/token");
+            String responseBody = response.getBody().asString();
+            System.out.println("auth token api response body is:"+responseBody);
+            JSONParser jsonParser1 = new JSONParser();
+            JSONObject jsonObject1 = (JSONObject) jsonParser1.parse(responseBody);
+             authTokenID = jsonObject1.get("access_token").toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return authTokenID;
+    }
+
+   // public void getMemberShipRules(){
+   public static void main(String[] args) {
+        try {
+            String authTokenID = getAuthTtoken();
+            RestAssured.baseURI = "https://apis-stage-rtfint.ace.aaaclubnet.com/uat1-s-membership-rules";
+            RequestSpecification rsp1 = RestAssured.given();
+            rsp1.header("Content-Type","application/json");
+            rsp1.header("Accept","application/json");
+            rsp1.header("client_id","5d32354008f24972b9ca13fe7c4e473c");
+            rsp1.header("client_secret","9885f76FC6C846779CEef931f0230c5d");
+            rsp1.header("Authorization","Bearer "+authTokenID);
+            FileReader fr = new FileReader("C:/Users/e678332/Desktop/memershiprules.json");
+            JSONParser jsonParser = new JSONParser();
+            JSONObject jsonObject = (JSONObject) jsonParser.parse(fr);
+          //  System.out.println("request json is:"+jsonObject);
+            rsp1.body(jsonObject);
+            Response response = rsp1.post("/v1/membership/rules");
+            ResponseBody responseBody = response.getBody();
+            String responseJson = responseBody.asString();
+           // System.out.println("response json is:"+responseJson);
+            JSONParser jsonParser1 = new JSONParser();
+            JSONObject jsonObject1 = (JSONObject) jsonParser1.parse(responseJson);
+            JSONArray jsonArray = (JSONArray) jsonObject1.get("hostServiceStatus");
+            System.out.println(jsonArray.get(0).toString());
+            System.out.println("-----------------");
+
+            for(int i=0; i<jsonArray.size();i++){
+                System.out.println(jsonArray.get(i).toString());
+            }
+
+        }catch (Exception e){
+          e.printStackTrace();
+
+        }
+    }
+
+}

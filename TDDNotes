@@ -1,0 +1,16 @@
+Test data driven developement:
+
+TDD is a iterative development process and each iterative starts with a set of test cases designed.
+The application/ functionality code will be developed by developers based upon the test cases designed.
+These test cases supposed to fail in the starting as there will not any application developed.
+All the test written earlier are executed once application code is ready and necessary changes need to be made to the failed test cases.
+Once all test cases are in passed test state we can be sure that particular feature is developed completely.
+
+Benefits and drawbacks of the TDD approach:
+Benefits:
+1. Test cases will be covered before hand less chance of bugs in the later phase.
+2. Unit testing is covered during the application development.
+
+Drawbacks:
+1.Re-writing the test cases whenever the requirement change.
+2. Test Maintenance test maintenance will be more.
